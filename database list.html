@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>List View - 交互数据地图平台</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        nav{background:#2c3e50;display:flex;justify-content:center;gap:2.5rem;padding:1rem 0;position:sticky;top:0;z-index:1000;}
+        nav a{color:white;text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+        nav a:hover{color:#a8d5a2;}
+        .header-bar{background:#7a9473;color:white;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;}
+        .header-left h1{font-size:1.5rem;font-weight:600;}
+        .header-right{display:flex;gap:3rem;}
+        .stat-item{text-align:right;}
+        .stat-value{font-size:1.2rem;font-weight:bold;}
+        .stat-label{font-size:0.85rem;opacity:0.9;}
+        .search-bar{background:white;padding:0.75rem 1rem;display:flex;justify-content:flex-end;gap:1rem;align-items:center;}
+        .search-bar input{padding:0.4rem;border:1px solid #ccc;border-radius:2px;}
+        .search-bar button{padding:0.4rem 1rem;background:#7a9473;color:white;border:none;cursor:pointer;border-radius:2px;}
+        .view-switch{background:#f5f5f5;padding:0.5rem;display:flex;gap:0.25rem;}
+        .view-btn{padding:0.3rem 0.6rem;border:1px solid #aaa;background:#eee;cursor:pointer;border-radius:3px;font-size:0.9rem;}
+        .view-btn.active{background:white;border-color:#333;}
+        .region-select{padding:0.3rem 0.5rem;border:1px solid #aaa;border-radius:3px;font-size:0.9rem;cursor:pointer;background:white;}
+        .list-container{padding:1rem 1.5rem;min-height:calc(100vh - 280px);}
+        .list-item{border:2px solid #7a9473;padding:1rem;margin-bottom:0.8rem;cursor:pointer;line-height:1.6;font-size:0.9rem;display:flex;gap:1rem;align-items:flex-start;position:relative;}
+        .list-item:hover{background:#f8f8f8;}
+        .list-item h4{margin-bottom:0.3rem;font-size:1rem;}
+        .list-img{width:120px;height:90px;object-fit:cover;border:1px solid #ccc;flex-shrink:0;}
+        .enter-btn{position:absolute;bottom:10px;right:10px;padding:2px 8px;border:1px solid #7a9473;background:white;font-size:0.8rem;cursor:pointer;}
+        .empty-tip{text-align:center;padding:4rem 0;color:#666;font-size:1rem;}
+        .pagination{display:none;justify-content:center;align-items:center;gap:0.3rem;padding:1.5rem 0;}
+        .pagination.show{display:flex;}
+        .page-btn{width:24px;height:24px;border:1px solid #aaa;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+        .page-btn.active{background:#ddd;border-color:#666;}
+        footer{background:#7a9473;color:white;text-align:center;padding:0.75rem;font-size:0.95rem;}
+    </style>
+</head>
+<body>
+    <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+    </nav>
+    <div class="header-bar">
+        <div class="header-left"><h1>PORTUGAL</h1></div>
+        <div class="header-right">
+            <div class="stat-item"><div class="stat-value" id="totalCount">0</div><div class="stat-label">Registrant</div></div>
+            <div class="stat-item"><div class="stat-value" id="showCount">0</div><div class="stat-label">Data volume</div></div>
+        </div>
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Category">
+        <input type="text" placeholder="Location">
+        <button>Search</button>
+    </div>
+    <div class="view-switch">
+        <button class="view-btn" onclick="location.href='databasemap.html'">Map</button>
+        <button class="view-btn" onclick="location.href='Database grid.html'">Grid</button>
+        <button class="view-btn active">List</button>
+        <select class="region-select" id="regionSelect">
+            <option value="">Region</option>
+            <option value="lisbon">Lisbon / 里斯本</option>
+            <option value="oporto">Porto / 波尔图</option>
+            <option value="alentejo">Alentejo / 阿连特如</option>
+            <option value="algarve">Algarve / 阿尔加维</option>
+            <option value="centro">Centro / 中部</option>
+            <option value="norte">Norte / 北部</option>
+            <option value="azores">Azores / 亚速尔</option>
+            <option value="madeira">Madeira / 马德拉</option>
+        </select>
+    </div>
+    <div class="list-container" id="listWrap"></div>
+    <div class="pagination" id="pageBox">
+        <button class="page-btn">&lt;</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <span>……</span>
+        <button class="page-btn">8</button>
+        <button class="page-btn">9</button>
+        <button class="page-btn">&gt;</button>
+    </div>
+    <footer>WELCOME TO JOIN US!</footer>
+    <script>
+        const listWrap=document.getElementById('listWrap');
+        const pageBox=document.getElementById('pageBox');
+        const totalCount=document.getElementById('totalCount');
+        const showCount=document.getElementById('showCount');
+        const MAX_ROWS=12;
+
+        const getData=()=>{
+            try{
+                const raw=localStorage.getItem('dataList')||'[]';
+                return JSON.parse(raw);
+            }catch(e){
+                console.error('读取失败',e);
+                return [];
+            }
+        };
+
+        function goToDetail(index){
+            localStorage.setItem('currentDetailIndex',index);
+            location.href='detail.html';
+        }
+
+        function renderList(currentPage=1,filterRegion=''){
+            let list=getData();
+
+            if(filterRegion){
+                list=list.filter(item=>
+                    (item.location||'').toLowerCase().includes(filterRegion.toLowerCase())
+                );
+            }
+
+            totalCount.textContent=getData().length;
+            showCount.textContent=list.length;
+
+            listWrap.innerHTML='';
+
+            if(!list.length){
+                listWrap.innerHTML='<div class="empty-tip">暂无用户上传数据</div>';
+                pageBox.classList.remove('show');
+                return;
+            }
+
+            const totalPages=Math.ceil(list.length/MAX_ROWS);
+            const start=(currentPage-1)*MAX_ROWS;
+            const end=start+MAX_ROWS;
+            const pageList=list.slice(start,end);
+
+            pageList.forEach((item,idx)=>{
+                const div=document.createElement('div');
+                div.className='list-item';
+                const imgSrc=(item.files&&item.files.length>0)?item.files[0]:'';
+                const originalIndex=start+idx;
+
+                div.innerHTML=`
+                    <img class="list-img" src="${imgSrc}" alt="img">
+                    <div>
+                        <h4>${item.title||'未命名'}</h4>
+                        <p>Uploader: ${item.uploader||'—'}</p>
+                        <p>Category: ${item.category||'—'}</p>
+                        <p>Keyword: ${item.keyword||'—'}</p>
+                        <p>Date: ${item.date||'—'}</p>
+                        <p>Weather: ${item.weather||'—'}</p>
+                        <p>Location: ${item.location||'—'}</p>
+                        <p>Brief Introduction: ${item.brief||'—'}</p>
+                    </div>
+                    <button class="enter-btn" onclick="goToDetail(${originalIndex})">enter</button>
+                `;
+                listWrap.appendChild(div);
+            });
+
+            pageBox.classList.toggle('show',totalPages>1);
+            updatePagination(totalPages,currentPage,filterRegion);
+        }
+
+        function updatePagination(totalPages,currentPage,filterRegion){
+            pageBox.innerHTML='';
+            const prev=document.createElement('button');
+            prev.className='page-btn';
+            prev.innerText='<';
+            prev.disabled=currentPage===1;
+            prev.onclick=()=>renderList(currentPage-1,filterRegion);
+            pageBox.appendChild(prev);
+
+            for(let i=1;i<=totalPages;i++){
+                const btn=document.createElement('button');
+                btn.className=`page-btn ${i===currentPage?'active':''}`;
+                btn.innerText=i;
+                btn.onclick=()=>renderList(i,filterRegion);
+                pageBox.appendChild(btn);
+            }
+
+            const next=document.createElement('button');
+            next.className='page-btn';
+            next.innerText='>';
+            next.disabled=currentPage===totalPages;
+            next.onclick=()=>renderList(currentPage+1,filterRegion);
+            pageBox.appendChild(next);
+        }
+
+        document.getElementById('regionSelect').addEventListener('change',e=>{
+            renderList(1,e.target.value);
+        });
+
+        renderList();
+    </script>
+</body>
+</html>

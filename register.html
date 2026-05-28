@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Register - 交互数据地图平台</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        nav{background:#2c3e50;display:flex;justify-content:center;gap:2.5rem;padding:1rem 0;position:sticky;top:0;z-index:1000;}
+        nav a{color:white;text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+        nav a:hover{color:#a8d5a2;}
+        .container{max-width:500px;margin:3rem auto;padding:0 1.5rem;}
+        .form-title{text-align:center;font-size:1.8rem;margin-bottom:2rem;color:#2c3e50;}
+        .form-group{margin-bottom:1.2rem;}
+        .form-group label{display:block;margin-bottom:0.5rem;color:#333;font-weight:500;}
+        .form-group input{width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
+        .form-group input:focus{outline:none;border-color:#7a9473;}
+        .btn{width:100%;padding:0.8rem;border:none;border-radius:4px;background:#7a9473;color:white;font-size:1rem;cursor:pointer;margin-top:1rem;}
+        .btn:hover{background:#688062;}
+        .tip{text-align:center;margin-top:1rem;font-size:0.9rem;color:#666;}
+        .tip a{color:#7a9473;text-decoration:none;}
+        .error-tip{color:red;text-align:center;margin:1rem 0;font-size:0.9rem;display:none;}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a href="condition.html">CONDITION</a>
+        <a href="Database.html">DATABASE</a>
+    </nav>
+
+    <div class="container">
+        <h2 class="form-title">REGISTER ACCOUNT</h2>
+        <div class="error-tip" id="errorTip"></div>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Create a username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Create a password (at least 6 chars)" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPwd" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" class="btn">REGISTER</button>
+        </form>
+        <p class="tip">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+
+    <script>
+        // 存储用户数据的key
+        const USER_LIST_KEY = 'userList';
+        const registerForm = document.getElementById('registerForm');
+        const errorTip = document.getElementById('errorTip');
+
+        // 获取已注册用户列表
+        const getUserList = () => JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
+        // 保存用户列表
+        const saveUserList = (list) => localStorage.setItem(USER_LIST_KEY, JSON.stringify(list));
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirmPwd').value;
+
+            // 校验规则
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters!');
+                return;
+            }
+            if (password !== confirmPwd) {
+                showError('Passwords do not match!');
+                return;
+            }
+
+            const userList = getUserList();
+            // 检查邮箱是否已注册
+            if (userList.some(user => user.email === email)) {
+                showError('This email is already registered!');
+                return;
+            }
+            // 检查用户名是否已存在
+            if (userList.some(user => user.username === username)) {
+                showError('This username is already taken!');
+                return;
+            }
+
+            // 模拟邮件验证（前端仅提示，实际需后端发邮件）
+            alert(`Verification email sent to ${email}! Please verify (simulated).`);
+            
+            // 保存新用户
+            const newUser = {
+                email,
+                username,
+                password, // 生产环境需加密，这里仅前端演示
+                isVerified: true // 模拟邮件验证通过
+            };
+            userList.push(newUser);
+            saveUserList(userList);
+
+            // 注册成功，跳转到登录页
+            alert('Registration successful! Please login.');
+            window.location.href = 'login.html';
+        });
+
+        // 显示错误提示
+        function showError(msg) {
+            errorTip.textContent = msg;
+            errorTip.style.display = 'block';
+            // 3秒后隐藏
+            setTimeout(() => {
+                errorTip.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

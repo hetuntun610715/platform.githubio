@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Login - 交互数据地图平台</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        nav{background:#2c3e50;display:flex;justify-content:center;gap:2.5rem;padding:1rem 0;position:sticky;top:0;z-index:1000;}
+        nav a{color:white;text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+        nav a:hover{color:#a8d5a2;}
+        .container{max-width:500px;margin:3rem auto;padding:0 1.5rem;}
+        .form-title{text-align:center;font-size:1.8rem;margin-bottom:2rem;color:#2c3e50;}
+        .form-group{margin-bottom:1.2rem;}
+        .form-group label{display:block;margin-bottom:0.5rem;color:#333;font-weight:500;}
+        .form-group input{width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
+        .form-group input:focus{outline:none;border-color:#7a9473;}
+        .btn{width:100%;padding:0.8rem;border:none;border-radius:4px;background:#7a9473;color:white;font-size:1rem;cursor:pointer;margin-top:1rem;}
+        .btn:hover{background:#688062;}
+        .tip{text-align:center;margin-top:1rem;font-size:0.9rem;color:#666;}
+        .tip a{color:#7a9473;text-decoration:none;}
+        .error-tip{color:red;text-align:center;margin:1rem 0;font-size:0.9rem;display:none;}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a href="condition.html">CONDITION</a>
+        <a href="Database.html">DATABASE</a>
+    </nav>
+
+    <div class="container">
+        <h2 class="form-title">LOGIN TO YOUR ACCOUNT</h2>
+        <div class="error-tip" id="errorTip"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username / Email</label>
+                <input type="text" id="loginId" placeholder="Enter username or email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPwd" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn">LOGIN</button>
+        </form>
+        <p class="tip">Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+
+    <script>
+        const USER_LIST_KEY = 'userList';
+        const LOGIN_STATE_KEY = 'loginState'; // 登录状态key
+        const loginForm = document.getElementById('loginForm');
+        const errorTip = document.getElementById('errorTip');
+
+        // 获取用户列表
+        const getUserList = () => JSON.parse(localStorage.getItem(USER_LIST_KEY) || '[]');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const loginId = document.getElementById('loginId').value.trim();
+            const loginPwd = document.getElementById('loginPwd').value;
+
+            const userList = getUserList();
+            // 查找用户（支持用户名/邮箱登录）
+            const user = userList.find(
+                u => (u.username === loginId || u.email === loginId) && u.password === loginPwd
+            );
+
+            if (!user) {
+                showError('Invalid username/email or password!');
+                return;
+            }
+
+            if (!user.isVerified) {
+                showError('Please verify your email first!');
+                return;
+            }
+
+            // 保存登录状态（生产环境需用token，这里前端模拟）
+            localStorage.setItem(LOGIN_STATE_KEY, JSON.stringify({
+                isLogin: true,
+                username: user.username,
+                email: user.email,
+                loginTime: new Date().getTime()
+            }));
+
+            // 登录成功，跳转到Database主页
+            alert(`Welcome back, ${user.username}!`);
+            window.location.href = 'Database.html';
+        });
+
+        function showError(msg) {
+            errorTip.textContent = msg;
+            errorTip.style.display = 'block';
+            setTimeout(() => {
+                errorTip.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

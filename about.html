@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EIA Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #000;
+            color: #000;
+        }
+        nav {
+            background: #222;
+            padding: 1rem 2rem;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            background-color: #fff;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+        .intro-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .section-box {
+            border: 2px solid #6b9071;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+        .desc-text {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ✅ 机构图标网格（和官网完全一样） */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            background-color: #f0f0f0;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s;
+        }
+        .logo-item:hover {
+            transform: translateY(-4px);
+        }
+        .logo-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+        }
+        .logo-item span {
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .analysis-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .analysis-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        /* ✅ 可点击图片区域 */
+        .clickable-image {
+            width: 100%;
+            border: 2px solid #6b9071;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 2rem;
+        }
+
+        footer {
+            background-color: #6b9071;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <ul>
+        <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+    </ul>
+</nav>
+
+<div class="container">
+    <h1>What is Environmental Impact Assessment (EIA)?</h1>
+    <p class="intro-text">Introduction to EIA: purpose, functions, relevant laws, institutions, and analysis of existing documents.</p>
+
+    <div class="section-box">RELEVANT LAWS</div>
+    <p class="desc-text">Contains legal documents, official links, and key excerpts.</p>
+
+    <div class="section-box">RELEVANT INSTITUTIONS</div>
+
+    <!-- ✅ 全部英文 + 可点击 + 在线图标（不会缺失） -->
+    <div class="logo-grid">
+        <a href="https://siliamb.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\5.png" alt="SILIAMB">
+            <span>Integrated Licensing System</span>
+        </a>
+        <a href="https://sniamb.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\6.png" alt="SNIAMB">
+            <span>Georeferenced Information</span>
+        </a>
+        <a href="https://snirh.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\7.png" alt="SNIRH">
+            <span>Water Resources Info</span>
+        </a>
+        <a href="https://qualar.apambiente.pt/" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\8.png" alt="QUALAR">
+            <span>Air Quality Information</span>
+        </a>
+        <a href="https://rea.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\9.png" alt="REA">
+            <span>National Environment Relationship</span>
+        </a>
+        <a href="https://participa.pt/" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\10.png" alt="Participa">
+            <span>Public Consultation</span>
+        </a>
+        <a href="https://silogr.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\11.png" alt="SILOGR">
+            <span>Waste Licensing Info</span>
+        </a>
+        <a href="https://cosmo.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\12.png" alt="COSMO">
+            <span>Costela Monitoring</span>
+        </a>
+        <a href="https://siaia.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\13.png" alt="SIAIA">
+            <span>Environmental Impact Assessment</span>
+        </a>
+        <a href="https://enea.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\14.png" alt="ENEA">
+            <span>Environmental Education</span>
+        </a>
+        <a href="https://radnet.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\15.png" alt="RADNET">
+            <span>Radiation Monitoring</span>
+        </a>
+        <a href="https://life.apambiente.pt" target="_blank" class="logo-item">
+            <img src="E:\RS3 T3\website\picture\16.png" alt="LIFE">
+            <span>EU LIFE Programme</span>
+        </a>
+    </div>
+
+    <h2 class="analysis-title">Analysis and Comparison of Existing EIA Files</h2>
+    <p class="analysis-subtitle">Aquaterra Avocado Plantation</p>
+
+    <!-- ✅ 可点击图片跳转 -->
+    <a href="avocado.html">
+        <img src="E:\RS3 T3\website\picture\4.png" alt="EIA Deficiency Screenshot" class="clickable-image">
+    </a>
+</div>
+
+<footer>WELCOME TO JOIN US!</footer>
+
+</body>
+</html>

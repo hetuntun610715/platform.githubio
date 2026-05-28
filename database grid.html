@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Database Grid</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        nav{background:#2c3e50;display:flex;justify-content:center;gap:2.5rem;padding:1rem 0;position:sticky;top:0;z-index:1000;}
+        nav a{color:white;text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+        nav a:hover{color:#a8d5a2;}
+        .header-bar{background:#7a9473;color:white;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;}
+        .header-left h1{font-size:1.5rem;font-weight:600;}
+        .header-right{display:flex;gap:3rem;}
+        .stat-item{text-align:right;}
+        .stat-value{font-size:1.2rem;font-weight:bold;}
+        .stat-label{font-size:0.85rem;opacity:0.9;}
+        .view-bar{background:white;padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;}
+        .view-buttons{display:flex;gap:0.25rem;}
+        .view-btn{padding:0.3rem 0.6rem;border:1px solid #aaa;background:#eee;cursor:pointer;border-radius:3px;font-size:0.9rem;}
+        .view-btn.active{background:white;border-color:#333;}
+        .search-box{display:flex;gap:0.5rem;}
+        .search-box input{padding:0.3rem;border:1px solid #aaa;}
+        .grid-container{padding:2rem 1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;padding-bottom:60px;}
+        .card{border:2px solid #7a9473;padding:1rem;position:relative;display:flex;gap:1rem;background:white;}
+        .card-img{width:120px;height:120px;object-fit:cover;}
+        .card-content{font-size:0.8rem;line-height:1.5;}
+        .card-content h4{margin-bottom:4px;}
+        .grid-enter-btn{position:absolute;bottom:10px;right:10px;padding:2px 8px;border:1px solid #7a9473;background:#fff;font-size:12px;cursor:pointer;}
+        .empty-tip{grid-column:1/-1;text-align:center;padding:2rem;color:#666;}
+        footer{background:#7a9473;color:white;text-align:center;padding:0.75rem;position:fixed;bottom:0;width:100%;}
+    </style>
+</head>
+<body>
+<nav>
+    <a href="index.html">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="condition.html">CONDITION</a>
+    <a href="Database.html">DATABASE</a>
+</nav>
+
+<div class="header-bar">
+    <div class="header-left"><h1>PORTUGAL</h1></div>
+    <div class="header-right">
+        <div class="stat-item"><div class="stat-value" id="regCount">0</div><div>Registrant</div></div>
+        <div class="stat-item"><div class="stat-value" id="dataCount">0</div><div>Data volume</div></div>
+    </div>
+</div>
+
+<div class="view-bar">
+    <div class="view-buttons">
+        <button class="view-btn" onclick="location.href='databasemap.html'">Map</button>
+        <button class="view-btn active">Grid</button>
+        <button class="view-btn" onclick="location.href='database list.html'">List</button>
+    </div>
+    <div class="search-box">
+        <input placeholder="keywords">
+        <button>Search</button>
+    </div>
+</div>
+
+<div class="grid-container" id="gridContainer"></div>
+
+<footer>WELCOME TO JOIN US!</footer>
+
+<script>
+    const grid = document.getElementById('gridContainer');
+    const regCount = document.getElementById('regCount');
+    const dataCount = document.getElementById('dataCount');
+
+    function getData() {
+        try {
+            return JSON.parse(localStorage.getItem('dataList') || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function goToDetail(index) {
+        localStorage.setItem('currentDetailIndex', index);
+        location.href = 'detail.html';
+    }
+
+    function render() {
+        const list = getData();
+        grid.innerHTML = '';
+
+        // 更新统计
+        dataCount.innerText = list.length;
+        const users = [...new Set(list.map(i => i.uploader).filter(Boolean))];
+        regCount.innerText = users.length;
+
+        if (list.length === 0) {
+            grid.innerHTML = '<div class="empty-tip">No data</div>';
+            return;
+        }
+
+        list.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const img = item.files?.[0] || '';
+
+            card.innerHTML = `
+                <img src="${img}" class="card-img">
+                <div class="card-content">
+                    <h4>${item.title || ''}</h4>
+                    <p>Uploader: ${item.uploader || ''}</p>
+                    <p>Category: ${item.category || ''}</p>
+                    <p>Keyword: ${item.keyword || ''}</p>
+                    <p>Date: ${item.date || ''}</p>
+                    <p>Weather: ${item.weather || ''}</p>
+                </div>
+                <button class="grid-enter-btn" onclick="goToDetail(${index})">enter</button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // 页面加载渲染
+    render();
+</script>
+
+</body>
+</html>

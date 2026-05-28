@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Environmental Impact Assessment Shared Database</title>
+        <style>
+        /* 全局重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* ======================
+           1. 顶部淡入淡出轮播（修复高度问题）
+           ====================== */
+        .banner {
+            position: relative;
+            width: 100%;
+            /* 给一个最小高度，防止容器塌陷 */
+            min-height: 60vh;
+            overflow: hidden;
+        }
+
+        /* 图片容器：让所有图片叠在一起 */
+        .carousel-images {
+            position: relative;
+            width: 100%;
+            /* 关键：设置高度为 0，靠伪元素撑开，同时给图片绝对定位 */
+            height: 0;
+            padding-bottom: 60%; /* 用图片的宽高比撑开容器，你可以根据图片调整 */
+        }
+
+        .carousel-images img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保证图片填满容器 */
+            filter: brightness(0.5);
+            opacity: 0;
+            animation: fade 15s infinite;
+        }
+
+        /* 三张图，每张停留3秒 */
+        .carousel-images img:nth-child(1) { animation-delay: 0s; }
+        .carousel-images img:nth-child(2) { animation-delay: 3s; }
+        .carousel-images img:nth-child(3) { animation-delay: 6s; }
+        .carousel-images img:nth-child(4) { animation-delay: 9s; }
+        .carousel-images img:nth-child(5) { animation-delay: 12s; }
+        .carousel-images img:nth-child(6) { animation-delay: 15s; }
+
+        @keyframes fade {
+            0%    { opacity: 0; }
+            5%    { opacity: 1; }
+            30%   { opacity: 1; }
+            35%   { opacity: 0; }
+            100%  { opacity: 0; }
+        }
+
+        /* 导航栏（固定在最上层） */
+        nav {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            margin: 0 25px;
+            letter-spacing: 1px;
+        }
+
+        /* 标题/副标题（固定在图片上） */
+        .banner h1 {
+            position: absolute;
+            top: 20%;
+            left: 8%;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+            z-index: 5;
+        }
+
+        .subtitle {
+            position: absolute;
+            top: 55%;
+            left: 8%;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            z-index: 5;
+        }
+
+        /* ======================
+           2. 下方内容（完全保留）
+           ====================== */
+        .intro-section {
+            padding: 40px 8%;
+            text-align: center;
+        }
+
+        .intro-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .intro-section p {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        .map-card {
+            border: 2px solid #5a8a66;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .map-card img {
+            width: 60%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .map-card .card-content {
+            width: 40%;
+            text-align: left;
+        }
+
+        .map-card .enter-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            border: 1px solid #5a8a66;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+        }
+/* 五张小图卡片容器 - 强制一行 */
+        .cards-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: nowrap;
+            padding: 0 10px;
+        }
+
+        .small-card {
+            width: 19%;
+            position: relative;
+            flex-shrink: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .small-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        /* 黑色半透明遮罩 */
+        .small-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 遮罩上的白色文字 */
+        .small-card .overlay-text {
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* 悬停效果 */
+        .small-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .small-card:hover .overlay {
+            opacity: 1;
+        }
+
+        footer {
+            background-color: #85a68a;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部轮播区域 -->
+<div class="banner">
+    <div class="carousel-images">
+        <!-- 你真正想要轮播的 3 张图，路径写对！ -->
+        <img src="E:\RS3 T3\website\picture\_MG_2977.JPG" alt="">
+        <img src="E:\RS3 T3\website\picture\_MG_3111.JPG" alt="">
+        <img src="E:\RS3 T3\website\picture\_MG_3163.JPG" alt="">
+        <img src="E:\RS3 T3\website\picture\_MG_3058.JPG" alt="">
+        <img src="E:\RS3 T3\website\picture\_MG_3459.JPG" alt="">
+        <img src="E:\RS3 T3\website\picture\_MG_3046.JPG" alt="">
+    </div>
+
+        <!-- 导航栏 -->
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+        </nav>
+
+        <!-- 标题 -->
+        <h1>Environmental Impact Assessment Shared Database</h1>
+        <p class="subtitle">Subtitle / Concept: A participatory environmental archive</p>
+    </div>
+
+    <!-- 下方内容区域 -->
+    <div class="intro-section">
+        <h2>WEBSITE FUNCTION / BRIEF INTRODUCTION</h2>
+        <p>
+            This platform aims to connect and integrate the fragmented environmental issues hidden in the local area for analysis and presentation. It also creates an environmental impact assessment database that is jointly developed by local residents, farmers, members of environmental protection movements, and others, so that local farmers and residents can participate in the environmental risk assessment process together.
+        </p>
+
+        <h2>TABLE OF CONTENTS</h2>
+
+        <div class="map-card">
+            <a href="map.html">
+                <img src="E:\RS3 T3\website\picture\20.png" alt="Interactive Map">
+            </a>
+            <div class="card-content">
+                <h3>Interactive map</h3>
+                <p>Introduction:<br>
+                This map presents the existing environmental issues on the same map in different levels, helping to analyze the complexity of the environment.</p>
+                <a href="map.html" class="enter-btn">Enter →</a>
+            </div>
+        </div>
+
+        <!-- 五张卡片：悬停遮罩+文字 -->
+        <div class="cards-container">
+            <!-- 1. About EIA -->
+            <div class="small-card" onclick="window.location.href='about.html'">
+                <img src="E:\RS3 T3\website\picture\19.png" alt="About EIA">
+                <div class="overlay">
+                    <div class="overlay-text">ABOUT EIA<br>Understand the background of the EIA study and analyze the existing problems through case studies</div>
+                </div>
+            </div>
+
+            <!-- 2. Contradictory reality -->
+            <div class="small-card" onclick="window.location.href='condition.html'">
+                <img src="E:\RS3 T3\website\picture\1.png" alt="Contradictory reality">
+                <div class="overlay">
+                    <div class="overlay-text">CONDITION<br>Analyze the existing environmental problems and link them together</div>
+                </div>
+            </div>
+
+            <!-- 5. Shared database -->
+            <div class="small-card" onclick="window.location.href='database.html'">
+                <img src="E:\RS3 T3\website\picture\21.png" alt="Shared database">
+                <div class="overlay">
+                    <div class="overlay-text">DATABASE<br>Data Collaboration Open Platform</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        WELCOME TO JOIN US!
+    </footer>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Database Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        nav{background:#2c3e50;display:flex;justify-content:center;gap:2.5rem;padding:1rem 0;position:sticky;top:0;z-index:1000;}
+        nav a{color:white;text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+        nav a:hover{color:#a8d5a2;}
+        .header-bar{background:#7a9473;color:white;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;}
+        .header-left h1{font-size:1.5rem;font-weight:600;}
+        .header-right{display:flex;gap:3rem;}
+        .stat-item{text-align:right;}
+        .stat-value{font-size:1.2rem;font-weight:bold;}
+        .stat-label{font-size:0.85rem;opacity:0.9;}
+        .search-bar{background:white;padding:0.75rem 1rem;display:flex;justify-content:flex-end;gap:1rem;align-items:center;}
+        .search-bar input{padding:0.4rem;border:1px solid #ccc;border-radius:2px;}
+        .search-bar button{padding:0.4rem 1rem;background:#7a9473;color:white;border:none;cursor:pointer;border-radius:2px;}
+        .view-switch{background:#f5f5f5;padding:0.5rem;display:flex;gap:0.25rem;}
+        .view-btn{padding:0.3rem 0.6rem;border:1px solid #aaa;background:#eee;cursor:pointer;border-radius:3px;font-size:0.9rem;}
+        .view-btn.active{background:white;border-color:#333;}
+        .region-select{padding:0.3rem 0.5rem;border:1px solid #aaa;border-radius:3px;font-size:0.9rem;cursor:pointer;background:white;}
+        
+        .map-container {
+            position: relative;
+            height:calc(100vh - 220px);
+            width:100%;
+        }
+        #map{height:100%;width:100%;}
+
+        /* 半透明白色图层控件（你要的效果） */
+        .layer-control {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(255,255,255,0.75); /* 半透明白色 */
+            backdrop-filter: blur(4px); /* 磨砂玻璃效果 */
+            padding: 1rem;
+            z-index: 1000;
+            min-width: 220px;
+            border: 1px solid #7a9473;
+            border-radius: 4px;
+        }
+        .layer-control h2 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .layer-control p {
+            font-size:0.85rem; 
+            margin-bottom:1rem; 
+            color:#666;
+            text-align: center;
+        }
+        .layer-btn {
+            display: block;
+            width: 100%;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #ddd;
+            color: #2c3e50;
+            padding: 0.7rem;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            border-radius: 3px;
+        }
+        .layer-btn:hover, .layer-btn.active {
+            background-color: #7a9473;
+            color: white;
+            border-color: #7a9473;
+        }
+
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: #fff;
+            border: 3px solid #7a9473;
+            border-radius: 0;
+            padding: 15px;
+            width: 280px;
+        }
+        .custom-popup .leaflet-popup-tip {
+            background: #7a9473;
+            border: none;
+        }
+        .popup-card {
+            position: relative;
+            min-height: 340px;
+            padding-bottom: 40px;
+        }
+        .popup-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .popup-card .title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .popup-card p {
+            margin: 4px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .popup-enter-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 0;
+            padding: 3px 10px;
+            border: 1px solid #7a9473;
+            background: #fff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        footer{background:#7a9473;color:white;text-align:center;padding:0.75rem;font-size:0.95rem;}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a href="condition.html">CONDITION</a>
+        <a href="Database.html">DATABASE</a>
+    </nav>
+
+    <div class="header-bar">
+        <div class="header-left"><h1>PORTUGAL</h1></div>
+        <div class="header-right">
+            <div class="stat-item">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Registrant</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="dataCount">0</div>
+                <div class="stat-label">Data volume</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <input placeholder="Category">
+        <input placeholder="Location">
+        <button>Search</button>
+    </div>
+
+    <div class="view-switch">
+        <button class="view-btn active">Map</button>
+        <button class="view-btn" onclick="location.href='Database grid.html'">Grid</button>
+        <button class="view-btn" onclick="location.href='database list.html'">List</button>
+        <select class="region-select" id="regionSelect">
+            <option value="">Region</option>
+            <option value="lisbon">Lisbon</option>
+            <option value="oporto">Porto</option>
+            <option value="alentejo">Alentejo</option>
+            <option value="algarve">Algarve</option>
+            <option value="centro">Centro</option>
+            <option value="norte">Norte</option>
+        </select>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+        <div class="layer-control">
+            <h2>Hierarchical Information</h2>
+            <p>When different levels are selected, different information layers will appear on the map.</p>
+            <button class="layer-btn" data-layer="aquifer">AQUIFER</button>
+            <button class="layer-btn" data-layer="pollution">POLLUTION</button>
+            <button class="layer-btn" data-layer="rain">RAIN & FLOOD</button>
+            <button class="layer-btn" data-layer="subsidence">LAND SUBSIDENCE</button>
+            <button class="layer-btn" data-layer="plantation">PLANTATION</button>
+            <button class="layer-btn" data-layer="pending">PENDING DETERMINATION</button>
+        </div>
+    </div>
+
+    <footer>WELCOME TO JOIN US!</footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([39.5, -8.0], 7);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
+           .addTo(map);
+
+        const layers = {
+            aquifer: null, pollution: null, rain: null, subsidence: null, plantation: null, pending: null
+        };
+
+        layers.aquifer = L.geoJSON(null, {
+            style: { color: '#44aaff', weight: 0, fillColor: '#44aaff', fillOpacity: 0.3 }
+        });
+        layers.pollution = L.geoJSON(null, {
+            style: { color: '#ff4444', weight: 0, fillColor: '#ff4444', fillOpacity: 0.3 }
+        });
+        layers.rain = L.geoJSON(null, { style: { fillColor: '#44aaff', fillOpacity:0.3, color:'transparent' } });
+        layers.subsidence = L.geoJSON(null, { style: { fillColor: '#aa44ff', fillOpacity:0.3, color:'transparent' } });
+        layers.plantation = L.geoJSON(null, { style: { fillColor: '#44ff88', fillOpacity:0.3, color:'transparent' } });
+        layers.pending = L.geoJSON(null, { style: { fillColor: '#888888', fillOpacity:0.3, color:'transparent' } });
+
+        const buttons = document.querySelectorAll('.layer-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const layerName = btn.dataset.layer;
+                const layer = layers[layerName];
+                if (map.hasLayer(layer)) {
+                    map.removeLayer(layer);
+                    btn.classList.remove('active');
+                } else {
+                    map.addLayer(layer);
+                    btn.classList.add('active');
+                }
+            });
+        });
+
+        function getData() {
+            try { return JSON.parse(localStorage.getItem('dataList') || '[]'); } catch (e) { return []; }
+        }
+        function goToDetail(index) {
+            localStorage.setItem('currentDetailIndex', index);
+            location.href = 'detail.html';
+        }
+
+        function renderAllMarkers() {
+            const data = getData();
+            map.eachLayer(layer => {
+                if (layer.options?.className === 'dataMarker') map.removeLayer(layer);
+            });
+            data.forEach((item, index) => {
+                const lat = 37.2 + Math.random() * 4.5;
+                const lng = -9.5 + Math.random() * 3;
+                const marker = L.marker([lat, lng], {
+                    className: 'dataMarker',
+                    icon: L.divIcon({
+                        html: `<div style="width:12px;height:12px;background:red;border-radius:50%;"></div>`,
+                        iconSize: [12, 12]
+                    })
+                }).addTo(map);
+
+                const img = item.files?.[0] || '';
+                const imgHtml = img 
+                    ? `<img src="${img}" alt="Photo" />` 
+                    : `<div style="width:100%;height:160px;background:#eee;border:1px solid #ccc;"></div>`;
+
+                const popupContent = `
+                <div class="popup-card">
+                    ${imgHtml}
+                    <div class="title">${item.title || 'title'}</div>
+                    <p>Uploader: ${item.uploader || 'xxx'}</p>
+                    <p>Category: ${item.category || 'xxxx'}</p>
+                    <p>Key words: ${item.keyword || 'xxx, xxx'}</p>
+                    <p>Location: ${item.location || 'xxx, xxx'}</p>
+                    <p>Brief Introduction:</p>
+                    <p>${item.brief || 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}</p>
+                    <button class="popup-enter-btn" onclick="goToDetail(${index})">enter</button>
+                </div>`;
+
+                marker.bindPopup(popupContent, { className: 'custom-popup', maxWidth: 280 });
+            });
+        }
+
+        function updateStats() {
+            const data = getData();
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('dataCount').innerText = data.length;
+        }
+
+        renderAllMarkers();
+        updateStats();
+    </script>
+</body>
+</html>

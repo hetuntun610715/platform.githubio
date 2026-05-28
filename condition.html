@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Problems</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        /* 关键：去掉了之前限制宽度的容器，让页面占满全屏 */
+        .page-container {
+            width: 100%;
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* 顶部导航 */
+        nav {
+            background-color: #000;
+            padding: 1.5rem 2rem;
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            align-items: center;
+            background-image: url(''); /* 可以换成你的背景图 */
+            background-size: cover;
+            background-position: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* 标题 */
+        .page-title {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900 !important;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* 视频容器改为居中，不再撑满全屏 */
+        .video-container {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 2rem 0; /* 上下留白，让视频不贴边 */
+            display: flex;
+            justify-content: center;
+        }
+        /* 视频居中缩小，最大宽度80%，高度自适应 */
+        .video-container video {
+            width: 90%;
+            max-width: 1200px; /* 限制最大宽度，不会太大 */
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* 介绍文字 */
+        .intro-section {
+            padding: 2rem;
+            text-align: center;
+        }
+        .intro-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        .intro-section p {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .divider {
+            width: 90%;
+            margin: 2rem auto;
+            border-bottom: 2px dashed #448844;
+        }
+
+        /* 卡片区域 */
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 2rem 3rem;
+            gap: 1rem;
+        }
+        .card {
+            position: relative;
+            width: 30%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card img {
+            width: 100%;
+            display: block;
+            border: 1px solid #ddd;
+        }
+        .card-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 0.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        /* 悬停时的解释框 */
+        .card-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            width: 200px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .card:hover .card-tooltip {
+            opacity: 1;
+        }
+
+        /* 底部绿色条 */
+        .footer-bar {
+            background-color: #557a55;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 顶部导航 -->
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+        </nav>
+
+        <!-- 标题 -->
+        <div class="page-title">EXISTING ENVIRONMENTAL PROBLEMS</div>
+
+        <!-- 视频区域（已修复） -->
+        <div class="video-container">
+            <!-- 修复：加上controls、设置正确的路径 -->
+            <video controls poster="E:\RS3 T3\website\picture\_MG_2977.JPG">
+                <source src="E:\RS3 T3\website\film\Film.mp4" type="video/mp4">
+                <!-- 备用提示：如果浏览器不支持 -->
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+
+        <!-- 介绍文字 -->
+        <div class="intro-section">
+            <h3>INTRODUCTION</h3>
+            <p>This film examines the current environmental situation in the region and the conflicts related to groundwater extraction, pollution and agricultural development.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 三张卡片 -->
+        <div class="cards-container">
+            <div class="card" onclick="location.href='Contradictory reality.html'">
+                <img src="E:\RS3 T3\website\picture\_MG_3111.JPG" alt="Contrary to Reality">
+                <div class="card-label">Contradictory reality</div>
+                <div class="card-tooltip">
+                    Analyzing the underlying reasons why Portugal, despite having floods, does not have sufficient available water sources for use
+                </div>
+            </div>
+            <div class="card" onclick="location.href='pollution.html'">
+                <img src="E:\RS3 T3\website\picture\_MG_3058.JPG" alt="Pollution">
+                <div class="card-label">POLLUTION</div>
+                <div class="card-tooltip">
+                    Visualizing the spread and impact of pollution on the aquifer.
+                </div>
+            </div>
+            <div class="card" onclick="location.href='Land subsidence.html'">
+                <img src="E:\RS3 T3\website\picture\22.png" alt="Land Subsidence">
+                <div class="card-label">LAND SUBSIDENCE</div>
+                <div class="card-tooltip">
+                    Mapping areas affected by land subsidence due to aquifer depletion.
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部条 -->
+        <div class="footer-bar">WELCOME TO JOIN US!</div>
+    </div>
+</body>
+</html>

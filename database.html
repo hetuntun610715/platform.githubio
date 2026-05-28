@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* 顶部导航 */
+        nav {
+            background-color: #000;
+            padding: 1.5rem 5rem;
+            display: flex;
+            gap: 3rem;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        /* 主内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+        .intro-text {
+            max-width: 1000px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 4rem;
+        }
+        .btn {
+            padding: 1rem 4rem;
+            border: 2px solid #5a7d5a;
+            border-radius: 15px;
+            background-color: white;
+            color: black;
+            font-size: 1.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #5a7d5a;
+            color: white;
+        }
+
+        /* 无缝滚动图片区 */
+        .scrolling-container {
+            overflow: hidden;
+            width: 100%;
+            padding-bottom: 25px; /* 图片和底部的空隙 */
+        }
+        .scrolling-wrapper {
+            display: flex;
+            animation: scroll-left 15s linear infinite;
+        }
+
+        /* ———— 核心：统一所有图片尺寸 + 居中裁剪 ———— */
+        .scrolling-wrapper img {
+            /* 统一宽高 */
+            width: 450px;   
+            height: 280px;  
+            /* 自动裁剪 + 居中显示，不变形 */
+            object-fit: cover;
+            object-position: center;
+            /* 图片之间空隙 */
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* 关键：滚动图片总宽度的一半，实现无缝循环 */
+                transform: translateX(-50%);
+            }
+        }
+
+        /* 底部欢迎栏 */
+        footer {
+            background-color: #5a7d5a;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <ul>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+            <!-- 新增登录/退出入口 -->
+            <a id="loginEntry" href="login.html" style="color:#a8d5a2;">LOGIN</a>
+            <a id="logoutEntry" href="javascript:;" style="color:#a8d5a2;display:none;">LOGOUT</a>
+        </ul>
+    </nav>
+
+    <!-- 在页面底部新增脚本 -->
+<script>
+    const LOGIN_STATE_KEY = 'loginState';
+    const loginEntry = document.getElementById('loginEntry');
+    const logoutEntry = document.getElementById('logoutEntry');
+
+    // 检查登录状态
+    function checkLoginState() {
+        const loginState = JSON.parse(localStorage.getItem(LOGIN_STATE_KEY) || '{"isLogin":false}');
+        if (loginState.isLogin) {
+            loginEntry.style.display = 'none';
+            logoutEntry.style.display = 'inline';
+        } else {
+            loginEntry.style.display = 'inline';
+            logoutEntry.style.display = 'none';
+        }
+    }
+
+    // 退出登录
+    logoutEntry.addEventListener('click', () => {
+        if (confirm('Are you sure to logout?')) {
+            localStorage.removeItem(LOGIN_STATE_KEY);
+            alert('Logout successful!');
+            window.location.reload();
+        }
+    });
+
+    // 页面加载时检查登录状态
+    checkLoginState();
+</script>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h1>SHARED DATABASE</h1>
+        <p class="intro-text">
+            A shared environmental database where you can upload your own data here, and also view the data uploaded by others and communicate with them to help create your own environmental impact assessment document.
+        </p>
+        <div class="button-group">
+            <!-- 点击跳转到对应页面 -->
+            <a href="upload.html" class="btn">UPLOAD</a>
+            <a href="databasemap.html" class="btn">SEARCH</a>
+        </div>
+    </div>
+
+    <!-- 无缝滚动图片 -->
+    <div class="scrolling-container">
+        <div class="scrolling-wrapper">
+            <!-- 第一组图片（替换成你自己的图片路径即可） -->
+            <img src="E:\RS3 T3\website\picture\_MG_2977.JPG" alt="Nature scene">
+            <img src="E:\RS3 T3\website\picture\_MG_3058.JPG" alt="Hand with soil">
+            <img src="E:\RS3 T3\website\picture\_MG_3111.JPG" alt="Plants on sand">
+            <!-- 第二组重复图片，实现无缝循环 -->
+            <img src="E:\RS3 T3\website\picture\_MG_2977.JPG" alt="Nature scene">
+            <img src="E:\RS3 T3\website\picture\_MG_3058.JPG" alt="Hand with soil">
+            <img src="E:\RS3 T3\website\picture\_MG_3111.JPG" alt="Plants on sand">
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+        WELCOME TO JOIN US!
+    </footer>
+</body>
+</html>

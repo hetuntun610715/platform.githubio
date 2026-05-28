@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DATA UPLOAD</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        nav { background:#2c3e50; display:flex; justify-content:center; gap:2.5rem; padding:1rem 0; position:sticky; top:0; z-index:1000; }
+        nav a { color:white; text-decoration:none; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+        nav a:hover { color:#a8d5a2; }
+        .container { max-width:900px; margin:20px auto; padding:0 20px; }
+        h1 { text-align:center; font-size:2em; margin-bottom:10px; }
+        .form-group { margin:15px 0; }
+        label { display:inline-block; width:180px; vertical-align:top; }
+        input[type="text"], select, textarea { border:1px solid #557755; padding:4px; font-family:monospace; }
+        textarea { width:70%; resize:vertical; }
+        .date-group, .evidence-group { display:inline-flex; align-items:center; gap:10px; }
+        .btn-group { display:flex; gap:20px; justify-content:center; margin-top:30px; }
+        button { border:1px solid #333; padding:6px 16px; background:#fff; font-family:monospace; cursor:pointer; }
+        .upload-plus { width:24px; height:24px; border:1px solid #557755; display:inline-flex; align-items:center; justify-content:center; font-size:1.2em; cursor:pointer; }
+        #evidenceInput { display:none; }
+        .preview-wrap { margin-top:8px; min-height:120px; border:1px solid #557755; padding:10px; display:none; flex-wrap:wrap; gap:10px; align-items:center; }
+        .media-item { position:relative; width:100px; height:100px; border:1px solid #ccc; }
+        .media-item img, .media-item video { width:100%; height:100%; object-fit:cover; }
+        .del-btn { position:absolute; right:2px; bottom:2px; background:rgba(0,0,0,0.6); color:#fff; padding:2px 6px; font-size:12px; cursor:pointer; display:none; }
+        .media-item:hover .del-btn { display:block; }
+        .footer-note { background:#7a9473; color:#fff; text-align:center; padding:8px; margin-top:30px; }
+    </style>
+</head>
+<body>
+    <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+    </nav>
+
+    <div class="container">
+        <h1>DATA UPLOAD</h1>
+        <p style="text-align:center;">Please upload your relevant data as per the requirements.</p>
+
+        <form id="dataUploadForm">
+            <div class="form-group">
+                <label>TITLE:</label>
+                <input type="text" id="title" placeholder="Please write your title here.">
+            </div>
+            <div class="form-group">
+                <label>DISCOVERER / UPLOADER:</label>
+                <input type="text" id="uploader" placeholder="Please write your name here.">
+            </div>
+            <div class="form-group">
+                <label>CATEGORY:</label>
+                <select id="category">
+                    <option value="">choose</option>
+                    <option value="Vegetation">Vegetation</option>
+                    <option value="Soil">Soil</option>
+                    <option value="Water">Water</option>
+                    <option value="Climate">Climate</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>KEYWORD:</label>
+                <select id="keyword">
+                    <option value="">choose</option>
+                    <option value="Oak Tree">Oak Tree</option>
+                    <option value="Humidity">Humidity</option>
+                    <option value="Temperature">Temperature</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>OBSERVATION DATE(DAY/MONTH/YEAR):</label>
+                <div class="date-group">
+                    <input type="text" id="day" placeholder="" size="2">
+                    <span>/</span>
+                    <input type="text" id="month" placeholder="" size="2">
+                    <span>/</span>
+                    <input type="text" id="year" placeholder="" size="4">
+                    <button type="button" id="pickDateBtn">choose</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>OBSERVATION WEATHER:</label>
+                <input type="text" id="weather" placeholder="Please briefly describe the data collection time and the weather conditions." size="60">
+            </div>
+            <div class="form-group">
+                <label>LOCATION:</label>
+                <button type="button" id="pickLocationBtn">choose</button>
+            </div>
+            <div class="form-group">
+                <label>BRIEF INTRODUCTION:</label>
+                <textarea id="briefIntro" rows="3" cols="60" placeholder="Please fill in a brief description of your data here to be displayed on the database interface."></textarea>
+            </div>
+            <div class="form-group">
+                <label>INTRODUCTION:</label>
+                <textarea id="detailedIntro" rows="8" cols="60" placeholder="Please fill in the detailed introduction about the data you have uploaded here."></textarea>
+            </div>
+            <div class="form-group">
+                <label>EVIDENCE:</label>
+                <div class="evidence-group">
+                    <div class="upload-plus" id="uploadPlus">+</div>
+                    <span style="font-size:0.9em;">Max 6 files, click "+" to upload pictures/videos</span>
+                    <input type="file" id="evidenceInput" accept="image/*,video/mp4" multiple>
+                </div>
+                <div class="preview-wrap" id="previewWrap"></div>
+            </div>
+            <div class="btn-group">
+                <button type="submit" id="uploadBtn">UPLOAD</button>
+                <button type="button" id="saveDraftBtn">SAVE DRAFT</button>
+                <button type="button" id="cancelBtn">CANCEL</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer-note">WELCOME TO JOIN US!</div>
+
+    <script>
+        const MAX_COUNT=6; let fileList=[];
+        document.getElementById('pickDateBtn').addEventListener('click',()=>{
+            const d=new Date();
+            document.getElementById('day').value=String(d.getDate()).padStart(2,'0');
+            document.getElementById('month').value=String(d.getMonth()+1).padStart(2,'0');
+            document.getElementById('year').value=d.getFullYear();
+        });
+        document.getElementById('pickLocationBtn').addEventListener('click',()=>alert('跳转到地图选点，回填LOCATION'));
+
+        const uploadPlus=document.getElementById('uploadPlus');
+        const evidenceInput=document.getElementById('evidenceInput');
+        const previewWrap=document.getElementById('previewWrap');
+        uploadPlus.addEventListener('click',()=>evidenceInput.click());
+        evidenceInput.addEventListener('change',e=>{
+            const files=Array.from(e.target.files);
+            if(fileList.length+files.length>MAX_COUNT){alert('最多6个文件');e.target.value='';return;}
+            files.forEach(file=>{
+                const url=URL.createObjectURL(file);
+                fileList.push({file,url});
+                const item=document.createElement('div');item.className='media-item';
+                let media=file.type.startsWith('image/')?document.createElement('img'):Object.assign(document.createElement('video'),{controls:true});
+                media.src=url;
+                const del=Object.assign(document.createElement('div'),{className:'del-btn',innerText:'delete'});
+                del.onclick=()=>{
+                    const i=fileList.findIndex(x=>x.url===url);
+                    if(i>-1){URL.revokeObjectURL(fileList[i].url);fileList.splice(i,1);}
+                    item.remove();
+                    if(!fileList.length)previewWrap.style.display='none';
+                };
+                item.append(media,del);previewWrap.appendChild(item);
+            });
+            previewWrap.style.display='flex';e.target.value='';
+        });
+
+        // 存数据（只存你表单里的字段+文件）
+        const getData=()=>JSON.parse(localStorage.getItem('dataList')||'[]');
+        const saveData=arr=>localStorage.setItem('dataList',JSON.stringify(arr));
+
+        document.getElementById('uploadBtn').addEventListener('click',e=>{
+            e.preventDefault();
+            const newData={
+                id:Date.now(),
+                title:document.getElementById('title').value,
+                uploader:document.getElementById('uploader').value,
+                category:document.getElementById('category').value,
+                keyword:document.getElementById('keyword').value,
+                date:`${document.getElementById('day').value}/${document.getElementById('month').value}/${document.getElementById('year').value}`,
+                weather:document.getElementById('weather').value,
+                location:'（用户地图选择）',
+                brief:document.getElementById('briefIntro').value,
+                intro:document.getElementById('detailedIntro').value,
+                files:fileList.map(x=>x.url)
+            };
+            const list=getData();list.push(newData);saveData(list);
+            alert('上传成功！已同步到地图/列表/网格页');
+            document.getElementById('dataUploadForm').reset();
+            previewWrap.innerHTML='';previewWrap.style.display='none';fileList=[];
+        });
+
+        document.getElementById('saveDraftBtn').addEventListener('click',()=>alert('草稿已保存'));
+        document.getElementById('cancelBtn').addEventListener('click',()=>{
+            if(confirm('确定取消？')){
+                document.getElementById('dataUploadForm').reset();
+                previewWrap.innerHTML='';previewWrap.style.display='none';
+                fileList.forEach(x=>URL.revokeObjectURL(x.url));fileList=[];
+            }
+        });
+    </script>
+</body>
+</html>

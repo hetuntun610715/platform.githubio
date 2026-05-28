@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Subsidence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        html, body {
+            width: 100%;
+            background: #222;
+        }
+
+        /* 导航栏（保持原样） */
+        nav {
+            background: rgba(0,0,0,0.5) url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;
+            padding: 15px 0;
+            width: 100%;
+        }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* 主内容区：白底，居中，宽度和之前一致 */
+        main {
+            background: #fff;
+            width: 100%;
+            padding: 30px 0;
+        }
+
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            font-size: 16px;
+            text-transform: uppercase;
+            margin: 2rem 0 1rem;
+        }
+
+        /* 正文段落 */
+        p {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto 15px;
+            line-height: 1.6;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        /* 通用图片容器 */
+        .img-container {
+            margin: 2rem auto;
+            max-width: 100%;
+            display: flex;        /* 必须保留 */
+            align-items: center;
+            justify-content: center; /* 水平居中 */
+        }
+        .img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .img-caption {
+            font-size: 0.8rem;
+            text-align: right;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+
+        /* 地图框：恢复为你原来的80%宽、600px高 */
+        .map-box {
+            width: 80%;
+            height: 600px;
+            margin: 0 auto 10px;
+            border: 1px solid #aaa;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .map-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 地图说明小字 */
+        .map-caption {
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* 视频框：恢复为你原来的80%宽、16:9比例 */
+        .video-box {
+            width: 80%;
+            aspect-ratio: 16/9;
+            margin: 0 auto;
+            border: 1px solid #aaa;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* 底部栏 */
+        footer {
+            background: #6b8e6b;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏（完全保留你原来的） -->
+    <nav>
+        <ul>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="condition.html">CONDITION</a>
+            <a href="Database.html">DATABASE</a>
+        </ul>
+    </nav>
+
+    <!-- 主内容区：按你最新截图排版，地图/视频比例恢复为80%宽 -->
+    <main>
+        <h1>LAND SUBSIDENCE</h1>
+
+        <h2>INTRODUCTION</h2>
+        <p>
+            The Earth's surface is in a state of continuous movement. Whether it is natural phenomena such as tectonic activities or volcanic eruptions, or human activities like groundwater extraction or mining, the dynamic changes on the surface will have a significant impact on infrastructure and natural ecosystems. In recent years, people's awareness of the potential risks of ground movement has been continuously increasing, so there is an urgent need for comprehensive and reliable ground movement information.
+        </p>
+
+        <!-- 地图框：恢复为原来的比例，居中 -->
+        <div class="map-box">
+            <iframe src="https://egms.land.copernicus.eu/" title="Map" allowfullscreen></iframe>
+        </div>
+        <p class="map-caption">Source of this map citation: EGMS https://egms.land.copernicus.eu/</p>
+        <p class="map-caption">You can use the mouse scroll wheel to zoom in on the map to find the desired location.</p>
+
+        <h2>WHY DOES LAND SUBSIDENCE OCCUR?</h2>
+        <p>
+            If local residents over-exploit groundwater, causing the usage volume to exceed the recharge volume, the water level in the aquifer will continuously drop. This will reduce the pore water pressure in the soil and increase the effective stress between soil particles. Eventually, it will lead to soil compaction and consolidation, resulting in ground subsidence.
+        </p>
+
+        <h2>WHY IS IT THAT PEOPLE HAVE DIFFICULTY NOTICING IT?</h2>
+        <p>
+            The process of land subsidence is extremely slow and continuous. Even in the areas where the land subsidence was the most severe in the past year, it only dropped by 5mm. In the short term, this change would not attract human attention.
+        </p>
+
+
+        <h2>Land subsidence and mapping of the distribution of plantations around the avocado project investigation site</h2>
+        <p>As can be seen from the picture, although land subsidence is related to excessive extraction of groundwater, it does not directly affect the areas of plantations that extract groundwater.</p>
+
+        <div class="img-container">
+            <img src="22.png" alt="Map of land subsidence and plantation distribution">
+            <div class="img-caption">Map of land subsidence and plantation distribution</div>
+        </div>
+
+
+        <h2>THE CONSEQUENCES AND CRISES BROUGHT ABOUT BY LAND SUBSIDENCE</h2>
+        <p>1. Destroying the land structure</p>
+        
+
+        <!-- 视频框：恢复为原来的比例，居中 -->
+        <div class="video-box">
+            <video controls>
+                <source src="your-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </main>
+
+    <!-- 底部栏 -->
+    <footer>
+        Welcome to join us!
+    </footer>
+</body>
+</html>
